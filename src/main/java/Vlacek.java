@@ -16,19 +16,18 @@ public class Vlacek {
 
     /**
      * Přidávejte vagonky do vlaku
-     * Podmínka je že vagonek první třídy musí být vždy řazen za předchozí vagonek toho typu, pokud žádný takový není je řazen rovnou za lokomotivu
-     * vagonek 2 třídy musí být vždy řazen až za poslední vagonek třídy první
-     * Poštovní vagonek je vždy za posledním vagónkem DRUHE_TRIDY
-     * Vagonky TRETI_TRIDY se vždy řadí na konec vláčku jako poslední vagonky
+     * Podminky přidávání vagónků:
+     *      1. UHLI musí být vždy řazeno hned za lokomotivu
+     *      2. DREVO se přidává vždy za poslední vagonek s UHLI, pokud neexistuje UHLI tak za LOKOMOTIVU
+     *      3. AUTA se přidávají na konec vlaku za poslední POSTOVNI vagonek
+     *      4. vagonky s NAFTA budou řazeny vždy před POSTOVNI vagonek
+     *
      * Při vkládání vagonku nezapomeňte vagonku přiřadit danou pozici ve vlaku
-     * !!!!!!! POZOR !!!!!! pokud přidáváte vagonek jinak než na konec vlaku musíte všem následujícím vagonkům zvýšit jejich umístění - doporučuji si pro tento účel vytvořit privátní metodu
+     * !!!!!!! POZOR !!!!!! pokud přidáváte vagonek jinak než na konec vlaku musíte všem následujícím vagonkům zvýšit jejich umístění - doporučuji si pro tento účel vytvořit metodu
      * @param type
      */
     public void pridatVagonek(VagonekType type) {
 
-    }
-
-    private void incrementUmisteni(Vagonek vagonek) {
     }
 
     public Vagonek getVagonekByIndex(int index) {
@@ -46,7 +45,7 @@ public class Vlacek {
      * Touto metodou si můžete vrátit poslední vagonek daného typu
      * Pokud tedy budu chtít vrátit vagonek typu lokomotiva dostanu hned první vagonek
      * @param type
-     * @return
+     * @return Vagonek
      */
     public Vagonek getLastVagonekByType(VagonekType type) {
         Vagonek last = lokomotiva;
@@ -55,13 +54,12 @@ public class Vlacek {
 
 
     /**
-     * Tato funkce přidá jídelní vagonek za poslední vagonek první třídy, pokud jídelní vagonek za vagonkem první třídy již existuje
-     * tak se další vagonek přidá nejblíže středu vagonků druhé třídy
-     * tzn: pokud budu mít 4 osobních vagonků tak zařadím jídelní vagonek za 2 osobní vagónek
-     * pokud budu mít osobních vagonků 5 zařadím jídelní vagonek za 3 osobní vagonek
+     * Přidává vagonek s TEKAVE_LATKY za posledni vagonek s NAFTA
+     *  pokud za posledním vagonkem NAFTA již vagonek s TEKAVE_LATKY existuje
+     *  přidá se za poslední vagonek AUTA
      */
-    public void pridatJidelniVagonek() {
-        Vagonek jidelni = new Vagonek(VagonekType.JIDELNI);
+    public void pridatVagonekTekaveLatky() {
+        Vagonek tekaveLatky = new Vagonek(VagonekType.TEKAVE_LATKY);
     }
 
     /**
@@ -75,13 +73,14 @@ public class Vlacek {
     }
 
     /**
-     * Hledejte jidelni vagonky
+     * Hledejte vagonky s TEKAVE_LATKY
+     * Vratí seznam s vagonky obsahujici TEKAVE_LATKY
      * @return
      */
-    public List<Vagonek> getJidelniVozy() {
-        List<Vagonek> jidelniVozy = new LinkedList<>();
+    public List<Vagonek> getVagonkyTekaveLatky() {
+        List<Vagonek> tekaveLatky = new LinkedList<>();
 
-        return jidelniVozy;
+        return tekaveLatky;
     }
 
     /**

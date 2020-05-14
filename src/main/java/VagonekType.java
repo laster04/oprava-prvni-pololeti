@@ -1,9 +1,9 @@
 public enum VagonekType {
-    PRVNI_TRIDA,
-    DRUHA_TRIDA,
-    TRETI_TRIDA,
-    LUZKOVY,
+    LOKOMOTIVA,
     POSTOVNI,
-    JIDELNI,
-    LOKOMOTIVA
+    DREVO,
+    UHLI,
+    NAFTA,
+    AUTA,
+    TEKAVE_LATKY
 }

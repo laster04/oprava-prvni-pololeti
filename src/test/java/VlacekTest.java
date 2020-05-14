@@ -20,139 +20,146 @@ class VlacekTest {
 
     @Test
     void test2() {
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA);
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA);
+        vlacek.pridatVagonek(VagonekType.DREVO);
+        vlacek.pridatVagonek(VagonekType.DREVO);
         assertTrue(this::isPostovniVagonLast);
         Vagonek vagonek = vlacek.getVagonekByIndex(2);
-        assertEquals(VagonekType.DRUHA_TRIDA, vagonek.getType());
-        vlacek.pridatVagonek(VagonekType.PRVNI_TRIDA);
+        assertEquals(VagonekType.DREVO, vagonek.getType());
+        vlacek.pridatVagonek(VagonekType.UHLI);
         vagonek = vlacek.getVagonekByIndex(2);
-        assertEquals(VagonekType.PRVNI_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.UHLI, vagonek.getType());
         vagonek = vlacek.getVagonekByIndex(3);
-        assertEquals(VagonekType.DRUHA_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.DREVO, vagonek.getType());
         assertEquals(3, vagonek.getUmisteni());
         assertTrue(this::isPostovniVagonLast);
     }
 
     @Test
     void test3() {
-        test2();
-        assertTrue(vlacek.getJidelniVozy().isEmpty());
-        assertEquals(2, vlacek.getPocetVagonkuByType(VagonekType.DRUHA_TRIDA));
-        assertEquals(1, vlacek.getPocetVagonkuByType(VagonekType.PRVNI_TRIDA));
+        test2(); // L,U,D,D,P
+        assertTrue(vlacek.getVagonkyTekaveLatky().isEmpty());
+        assertEquals(2, vlacek.getPocetVagonkuByType(VagonekType.DREVO));
+        assertEquals(1, vlacek.getPocetVagonkuByType(VagonekType.UHLI));
+        assertEquals(0, vlacek.getPocetVagonkuByType(VagonekType.AUTA));
     }
 
     @Test
     void test4() {
-        test2(); // L,1,2,2,P
-        vlacek.pridatVagonek(VagonekType.JIDELNI);
-        Vagonek vagonek = vlacek.getVagonekByIndex(3);
-        assertEquals(VagonekType.JIDELNI, vagonek.getType());
+        test2(); // L,U,D,D,P
+        vlacek.pridatVagonek(VagonekType.NAFTA);
+        assertTrue(this::isPostovniVagonLast);
+        vlacek.pridatVagonekTekaveLatky();
+        Vagonek vagonek = vlacek.getVagonekByIndex(6);
+        assertEquals(VagonekType.TEKAVE_LATKY, vagonek.getType());
         vagonek = vlacek.getVagonekByIndex(5);
-        assertEquals(VagonekType.DRUHA_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.NAFTA, vagonek.getType());
         assertTrue(this::isPostovniVagonLast);
     }
 
     @Test
     void test5() {
-        test4(); // L,1,J,2,2,P
-        List<Vagonek> jidelniVozy = vlacek.getJidelniVozy();
-        assertEquals(1, jidelniVozy.size());
+        test4(); // L,U,D,D,N,T,P
+        List<Vagonek> tekaveLatky = vlacek.getVagonkyTekaveLatky();
+        assertEquals(1, tekaveLatky.size());
     }
 
     @Test
     void test6() {
-        test4(); // L,1,J,2,2,P
-        vlacek.pridatJidelniVagonek(); // L,1,J,2,J,2,P
-        Vagonek vagonek = vlacek.getVagonekByIndex(5);
-        assertEquals(VagonekType.JIDELNI, vagonek.getType());
-        assertFalse(vlacek.getJidelniVozy().isEmpty());
-        vagonek = vlacek.getLastVagonekByType(VagonekType.DRUHA_TRIDA);
-        assertEquals(6, vagonek.getUmisteni());
+        test4(); // L,U,D,D,N,T,P
+        vlacek.pridatVagonek(VagonekType.AUTA);
+        vlacek.pridatVagonekTekaveLatky(); // L,U,D,D,N,T,P,A,T
+        Vagonek vagonek = vlacek.getVagonekByIndex(9);
+        assertEquals(VagonekType.TEKAVE_LATKY, vagonek.getType());
+        assertFalse(vlacek.getVagonkyTekaveLatky().isEmpty());
+        vagonek = vlacek.getLastVagonekByType(VagonekType.DREVO);
+        assertEquals(4, vagonek.getUmisteni());
     }
 
     @Test
     void test7() {
-        test4(); // L,1,J,2,2,P
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA);
-        vlacek.pridatVagonek(VagonekType.PRVNI_TRIDA); // L,1,1,J,2,2,2,P
-        vlacek.pridatVagonek(VagonekType.TRETI_TRIDA);
-        vlacek.pridatVagonek(VagonekType.TRETI_TRIDA); // L,1,1,J,2,2,2,P,3,3
+        test4(); // L,U,D,D,N,T,P
+        vlacek.pridatVagonek(VagonekType.UHLI);
+        vlacek.pridatVagonek(VagonekType.UHLI); // L,U,U,U,D,D,N,T,P
+        vlacek.pridatVagonek(VagonekType.AUTA);
+        vlacek.pridatVagonek(VagonekType.AUTA); // L,U,U,U,D,D,N,T,P,A,A
         Vagonek vagonek = vlacek.getVagonekByIndex(5);
-        assertEquals(VagonekType.DRUHA_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.DREVO, vagonek.getType());
         vagonek = vlacek.getVagonekByIndex(9);
-        assertEquals(VagonekType.TRETI_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.POSTOVNI, vagonek.getType());
         assertFalse(this::isPostovniVagonLast);
     }
 
     @Test
     void test8() {
-        test7(); // L,1,1,J,2,2,2,P,3,3
+        test7(); // L,U,U,U,D,D,N,T,P,A,A
         assertFalse(this::isPostovniVagonLast);
-        List<Vagonek> jidelniVozy = vlacek.getJidelniVozy();
-        assertEquals(1, jidelniVozy.size());
-        assertEquals(4, jidelniVozy.get(0).getUmisteni());
+        List<Vagonek> vagonkyTekaveLatky = vlacek.getVagonkyTekaveLatky();
+        assertEquals(1, vagonkyTekaveLatky.size());
+        assertEquals(8, vagonkyTekaveLatky.get(0).getUmisteni());
         Vagonek vagonek = vlacek.getVagonekByIndex(10);
-        assertEquals(VagonekType.TRETI_TRIDA, vagonek.getType());
-        vlacek.odebratPosledniVagonekByType(VagonekType.TRETI_TRIDA);
-        vlacek.odebratPosledniVagonekByType(VagonekType.TRETI_TRIDA); // L,1,1,J,2,2,2,P
-        assertTrue(this::isPostovniVagonLast);
+        assertEquals(VagonekType.AUTA, vagonek.getType());
+        vlacek.odebratPosledniVagonekByType(VagonekType.DREVO);
+        vlacek.odebratPosledniVagonekByType(VagonekType.AUTA); // L,U,U,U,D,N,T,P,A
+        assertEquals(9, vlacek.getDelka());
+        assertFalse(this::isPostovniVagonLast);
     }
 
     @Test
     void test9() {
-        test8();  // L,1,1,J,2,2,2,P
-        vlacek.odebratPosledniVagonekByType(VagonekType.DRUHA_TRIDA);
-        vlacek.odebratPosledniVagonekByType(VagonekType.DRUHA_TRIDA); // L,1,1,J,2,P
-        assertEquals(1, vlacek.getPocetVagonkuByType(VagonekType.DRUHA_TRIDA));
+        test8();  // L,U,U,U,D,N,T,P,A
+        vlacek.odebratPosledniVagonekByType(VagonekType.UHLI);
+        vlacek.odebratPosledniVagonekByType(VagonekType.UHLI); // L,U,D,N,T,P,A
+        assertEquals(1, vlacek.getPocetVagonkuByType(VagonekType.NAFTA));
+        vlacek.odebratPosledniVagonekByType(VagonekType.AUTA);
         assertTrue(this::isPostovniVagonLast);
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA);
-        vlacek.pridatVagonek(VagonekType.PRVNI_TRIDA);
-        vlacek.pridatVagonek(VagonekType.TRETI_TRIDA); // L,1,1,1,J,2,2,P,3
+        vlacek.pridatVagonek(VagonekType.AUTA);
+        vlacek.pridatVagonek(VagonekType.NAFTA);
+        vlacek.pridatVagonek(VagonekType.NAFTA); // L,U,D,N,T,N,N,P,A
     }
 
     @Test
     void test10() {
-        test9(); // L,1,1,1,J,2,2,P,3
+        test9(); // L,U,D,N,T,N,N,P,A
         Vagonek vagonek = vlacek.getVagonekByIndex(4);
-        assertEquals(VagonekType.PRVNI_TRIDA, vagonek.getType());
+        assertEquals(VagonekType.NAFTA, vagonek.getType());
         vagonek = vlacek.getLastVagonekByType(VagonekType.POSTOVNI);
         assertEquals(8, vagonek.getUmisteni());
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA);
-        vlacek.pridatVagonek(VagonekType.DRUHA_TRIDA); // L,1,1,1,J,2,2,2,2,P,3
-        vlacek.pridatVagonek(VagonekType.JIDELNI); // L,1,1,1,J,2,2,J,2,2,P,3
+        vlacek.pridatVagonek(VagonekType.UHLI);
+        vlacek.pridatVagonek(VagonekType.UHLI); // L,U,U,U,D,N,T,N,N,P,A
+        vlacek.pridatVagonekTekaveLatky(); // L,U,U,U,D,N,T,N,N,T,P,A
         assertFalse(this::isPostovniVagonLast);
     }
 
     @Test
     void test11() {
-        test10(); // L,1,1,1,J,2,2,J,2,2,P,3
-        vlacek.pridatVagonek(VagonekType.TRETI_TRIDA);
-        vlacek.pridatVagonek(VagonekType.TRETI_TRIDA); // L,1,1,1,J,2,2,J,2,2,P,3,3,3
-        assertEquals(3, vlacek.getPocetVagonkuByType(VagonekType.TRETI_TRIDA));
+        test10(); // L,U,U,U,D,N,T,N,N,T,P,A
+        vlacek.pridatVagonek(VagonekType.DREVO);
+        vlacek.pridatVagonek(VagonekType.AUTA); // L,U,U,U,D,D,N,T,N,N,T,P,A,A
+        assertEquals(3, vlacek.getPocetVagonkuByType(VagonekType.UHLI));
         Vagonek vagonek = vlacek.getLastVagonekByType(VagonekType.POSTOVNI);
-        assertEquals(11, vagonek.getUmisteni());
+        assertEquals(12, vagonek.getUmisteni());
     }
 
     @Test
     void test12() {
-        test11(); // L,1,1,1,J,2,2,J,2,2,P,3,3,3
+        test11(); // L,U,U,U,D,D,N,T,N,N,T,P,A,A
         assertEquals(14, vlacek.getDelka());
-        vlacek.pridatVagonek(VagonekType.LUZKOVY);
+        vlacek.pridatVagonekTekaveLatky();
         Vagonek vagonek = vlacek.getVagonekByIndex(6);
-        assertEquals(VagonekType.LUZKOVY, vagonek.getType());
+        assertEquals(VagonekType.DREVO, vagonek.getType());
+        vagonek = vlacek.getVagonekByIndex(15);
+        assertEquals(VagonekType.TEKAVE_LATKY, vagonek.getType());
     }
 
     @Test
     void test13() {
-        test11(); // L,1,1,1,J,2,2,J,2,2,P,3,3,3
-        vlacek.odebratPosledniVagonekByType(VagonekType.JIDELNI);
-        vlacek.odebratPosledniVagonekByType(VagonekType.JIDELNI);
-        vlacek.odebratPosledniVagonekByType(VagonekType.PRVNI_TRIDA);
-        vlacek.pridatVagonek(VagonekType.LUZKOVY);
-        vlacek.pridatVagonek(VagonekType.LUZKOVY); // L,1,1,LU,LU,2,2,2,2,P,3,3,3
+        test11(); // L,U,U,U,D,D,N,T,N,N,T,P,A,A,T
+        vlacek.odebratPosledniVagonekByType(VagonekType.TEKAVE_LATKY);
+        vlacek.odebratPosledniVagonekByType(VagonekType.TEKAVE_LATKY); // L,U,U,U,D,D,N,T,N,N,P,A,A
+        vlacek.odebratPosledniVagonekByType(VagonekType.UHLI);
+        vlacek.pridatVagonek(VagonekType.NAFTA); // L,U,U,U,D,D,N,T,N,N,N,P,A,A
         Vagonek vagonek = vlacek.getVagonekByIndex(4);
-        assertEquals(VagonekType.LUZKOVY, vagonek.getType());
+        assertEquals(VagonekType.UHLI, vagonek.getType());
 
     }
 
